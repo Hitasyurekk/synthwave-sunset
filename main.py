@@ -210,6 +210,37 @@ def lanterns():
         paint(*capsule(x, 2 * HOR - y - 4, x, 2 * HOR - y + 22, s * 0.5), hexc("#ffb347"), 0.25, 4)
 
 
+def glints():
+    # a few bright stars with four-point flares
+    for x, y, s in ((90, 60, 16), (450, 40, 12), (930, 70, 18), (820, 230, 10), (60, 420, 11), (380, 330, 9)):
+        paint(*circle(x, y, s * 0.9), [1, 1, 0.95], 0.25, s)
+        paint(*capsule(x - s * 2.2, y, x + s * 2.2, y, 1.1), [1, 1, 0.95], 0.8)
+        paint(*capsule(x, y - s * 2.2, x, y + s * 2.2, 1.1), [1, 1, 0.95], 0.8)
+        paint(*circle(x, y, 2.6), [1, 1, 1])
+
+
+def clouds():
+    # thin moonlit clouds drifting low across the sky
+    for cx, cy, w, a in ((180, 470, 170, 0.22), (900, 610, 150, 0.2), (420, 600, 120, 0.14)):
+        for dx, dy, r in ((-0.6, 0.1, 0.35), (-0.2, -0.15, 0.45), (0.25, -0.05, 0.4), (0.6, 0.12, 0.3)):
+            paint(*ellipse(cx + dx * w, cy + dy * w * 0.4, r * w, r * w * 0.38), hexc("#9fb8e8"), a, 14)
+
+
+def boat():
+    # a little paper boat riding the moon path, with a lantern at the bow
+    bx, by = 300, 800
+    hull = poly([(bx - 70, by - 12), (bx + 70, by - 12), (bx + 46, by + 18), (bx - 46, by + 18)], 3)
+    paint(*hull, hexc("#f4efe6"))
+    paint(*poly([(bx - 4, by - 12), (bx - 4, by - 78), (bx + 44, by - 12)], 2), hexc("#ffffff"))
+    paint(*poly([(bx - 10, by - 12), (bx - 10, by - 64), (bx - 52, by - 12)], 2), hexc("#e3dccd"))
+    paint(*circle(bx + 62, by - 26, 26), hexc("#ffb347"), 0.25, 16)
+    paint(*circle(bx + 62, by - 26, 7), hexc("#ffd27a"))
+    # its wobbling reflection
+    for k in range(6):
+        y = by + 26 + k * 7
+        paint(*capsule(bx - 40 + k * 3, y, bx + 40 - k * 3, y, 2), hexc("#f4efe6"), 0.18 - k * 0.025)
+
+
 def vignette():
     for y in range(H):
         for x in range(W):
@@ -235,8 +266,11 @@ def write_png(path):
 
 
 background()
+glints()
+clouds()
 whale()
 lanterns()
 moon_and_fisher()
+boat()
 vignette()
 write_png(os.environ.get("ENTRY_OUT", "/output/entry.png"))
